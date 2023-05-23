@@ -4,8 +4,10 @@ namespace App\Http\Controllers;
 use Illuminate\Support\Facades\Session;
 use Illuminate\Http\Request;
 use App\Models\Hotels;
+use App\Models\invoice;
 use Razorpay\Api\Api;
 use App\Models\Payment;
+use Illuminate\Support\Facades\App;
 
 
 
@@ -20,7 +22,7 @@ class RazorpayController extends Controller
     public function payment(Request $request)
 {        
     $input = $request->all();   
-     
+ 
     $api = new Api(env('RAZOR_KEY'), env('RAZOR_SECRET'));
     $payment = $api->payment->fetch($input['razorpay_payment_id']);
     if (count($input) && !empty($input['razorpay_payment_id'])) {
@@ -33,38 +35,18 @@ class RazorpayController extends Controller
         }
     }
 
-
-    
-    // Save payment details to the database
-    // $hotel_id = $request->input('hotel_id');
-    // $name = $request->input('name');
-    // $email = $request->input('email');
-    // $amount = $request->input('amount');
-    // $payment = new Payment;
-    // $payment->hotel_id = $hotel_id;
-    // $payment->name = $name;
-    // $payment->email = $email;
-    // $payment->amount = $amount;
-    // $payment->save();
     if(count($input) && !empty($input['razorpay_payment_id'])) {
         try {
-            // rzp payment status neih ho = create, authorized, captured, failed
-            $eventPayment = new Payment();
-            $eventPayment->name = "Test Name";
-            $eventPayment->email = "test@user.com";
-            $eventPayment->phone_number = "9865756576";
-            $eventPayment->address = "Test Address";
-            $eventPayment->payable_type = EventItem::class;
-            $eventPayment->sub_total = $payment['amount'] / 100;
-            $eventPayment->tax = 0;
-            $eventPayment->discount = 0;
-            $eventPayment->total = $payment['amount'] / 100;
-            $eventPayment->mode = "online";
-            $eventPayment->rzp_payment_id = $input['razorpay_payment_id'];
-            $eventPayment->payment_details = "Event booking";
-            $eventPayment->status = $response['status'];
-            dd($eventPayment);
-            $eventPayment->save();
+            
+            $Payment = new Payment();
+            $Payment->name =$request->name;
+            $Payment->email = $request->email;
+            $Payment->hotel_id = $request->hotelid;
+            $Payment->amount = $request->price/100 ;
+            $Payment->room_number = $request->roomnumber;
+            $Payment->payment_id = $input['razorpay_payment_id'];
+           
+            $Payment->save();
 
           
         } catch (\Exception $e) {
@@ -74,8 +56,19 @@ class RazorpayController extends Controller
         }
     }
     
-  
-    return redirect('/userhotels');
+    
+    return redirect('/invoice/' . $Payment->id . '/' . $Payment->hotel_id);
+
 }
+public function invoice($id,$hotelid)
+{   
+    $hot = Hotels::findOrFail($hotelid);
+    $order = Payment::where('id', $id)->first();
+    $pdf = App::make('dompdf.wrapper');
+    $pdf->loadView('invoice', compact('order','hot'))->setOptions(['defaultFont' => 'sans-serif']);
+    $pdf->setPaper(array(0, 0, 396, 612));
+    return $pdf->stream();
+}
+
 
 }

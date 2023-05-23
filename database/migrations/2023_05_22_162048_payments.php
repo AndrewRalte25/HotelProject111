@@ -18,6 +18,7 @@ return new class extends Migration
             $table->string('name');
             $table->string('email');
             $table->string('hotel_id');
+            $table->string('room_number');
             $table->integer('amount');
             $table->string('payment_id');
             $table->timestamps();

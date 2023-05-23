@@ -15,14 +15,12 @@
                             <a class="nav-link text-white" href="/hotels">Hotels</a>
                         </li>
                         <li class="nav-item">
-                            <a class="nav-link text-white" href="/items">Items</a>
+                            <a class="nav-link text-white" href="/userslist">Users</a>
                         </li>
                         <li class="nav-item">
                             <a class="nav-link text-white" href="/payment">Payment</a>
                         </li>
-                        <li class="nav-item">
-                            <a class="nav-link text-white" href="/profile">Profile</a>
-                        </li>
+                      
                     </ul>
                 </div>
             </div>

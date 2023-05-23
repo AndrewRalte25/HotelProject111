@@ -3,6 +3,9 @@
 namespace App\Http\Controllers;
 
 use App\Models\Hotels;
+use App\Models\Payment;
+use App\Models\Room;
+use App\Models\User;
 use Illuminate\Http\Request;
 
 class HotelController extends Controller
@@ -79,4 +82,26 @@ class HotelController extends Controller
         
         return redirect('/hotels')->with('success', 'Deleted Successfully');
     }
+
+    public function userlist()
+    {
+        $users = User::get();
+        return view('admin.userlist', compact('users'));
+    }
+    public function userdelete($id)
+    {
+        User::destroy($id);
+        return redirect('/userslist')->with('success', 'Deleted Successfully');
+    }
+    public function paymentlist()
+    {
+        $pays = Payment::get();
+        return view('admin.paymentlist', compact('pays'));
+    }
+    public function destroyroom($id)
+    {
+        Room::destroy($id);
+        return redirect('/hotels')->with('success', 'Deleted Successfully');
+    }
+
 }

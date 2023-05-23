@@ -35,14 +35,15 @@
                         <td>{{ $room->price }}</td>
                         <td>{{ $room->is_booked }}</td>
                         
-                        {{-- <td>
-                            <a href="{{ route('rooms.edit', [$hotel->id, $room->id]) }}" class="btn btn-sm btn-primary">Edit</a>
-                            <form action="{{ route('rooms.destroy', [$hotel->id, $room->id]) }}" method="post" style="display: inline;">
+                        <td>
+                            <form action="{{ '/rooms/' . $room->id }}" method="post">
                                 @csrf
                                 @method('DELETE')
-                                <button type="submit" class="btn btn-sm btn-danger" onclick="return confirm('Are you sure you want to delete this room?')">Delete</button>
+                                <button type="submit"><i class="bi bi-trash3-fill"></i></button>
                             </form>
-                        </td> --}}
+                        
+                            
+                        </td>
                     </tr>
                 @endforeach
             </tbody>
